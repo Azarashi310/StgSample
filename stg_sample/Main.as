@@ -3,19 +3,24 @@
 	import _mc.Mc_player;
 	import _mc.Mc_player_bullet1;
 	import _mc.Mc_player_bullet2;
+	import _mc.Mc_enemy1;
+	import _mc.Mc_enemy2;
 	import flash.display.MovieClip;
 	import flash.geom.Point;
 	import flash.events.KeyboardEvent;
 	import flash.ui.Keyboard;
-	import flash .events.Event;
+	import flash.events.Event;
 	import flash.utils.Timer;
 	import flash.events.TimerEvent;
+	import flash.display.Sprite;
+	import flash.display.Graphics;
 	
 	public class Main extends MovieClip {
 		
 		//キャラクター
 		private var Player:Mc_player;
 		
+		private var Enemy:Mc_enemy1;
 		//移動速度
 		private var Spead:int;
 		
@@ -32,7 +37,7 @@
 		//弾の許可
 		private var ArrowShotBullet:Boolean;
 		//キーコード
-		private var keyBuf:/*int*/Array = [];
+		private var keyBuf:/*uint*/Array = [];
 		
 		//ショット許可タイマ
 		private var ShotArrowTimer:Timer;
@@ -47,7 +52,7 @@
 			//キーボード操作
 			addEventListener(KeyboardEvent.KEY_UP, Keyboard_KEY_UP_EventListener);
 			addEventListener(KeyboardEvent.KEY_DOWN, Keyboard_KEY_DONW_EventListener);
-			
+
 			//まわすとこ
 			addEventListener(Event.ENTER_FRAME, ENTER_FRAME_EventHandler);
 			
@@ -58,13 +63,26 @@
 		//初期化
 		private function init():void 
 		{
+			//プレイヤーのインスタンスを作成
 			Player = new Mc_player();
+
+			Enemy = new Mc_enemy1();
+
+			//プレイヤーの座標の取得
 			var pt:Point = Player.getPoint();
-			
-			//初期位置の反映
+
+			//（プレイヤー）初期位置の反映
 			Player.x = pt.x;
 			Player.y = pt.y;
 			
+			//エネミーの座標位置の取得（暫定）
+			pt = Enemy.getPoint();
+
+			//（エネミー）初期位置の反映
+			Enemy.x = pt.x;
+			Enemy.y = pt.y;
+
+			//プレイヤー関連の設定
 			//移動速度
 			Spead = Player.getSpead();
 			
@@ -85,12 +103,16 @@
 			//プレイヤーを表示させる
 			this.addChild(Player);
 			
+			//敵の表示
+			this.addChild(Enemy);
+
 			//自身をstageにフォーカスする
 			focusRect = false;
 			stage.focus = this;
 			
 		}
 		
+		//メイン
 		private function ENTER_FRAME_EventHandler(e:Event):void 
 		{
 			MovePlayer();
@@ -104,10 +126,12 @@
 			ArrowShotBullet = true;
 		}
 		
+		//カラーチェンジ
 		private function Keyboard_KEY_UP_EventListener(e:KeyboardEvent):void 
 		{
 			if (e.keyCode == Keyboard.C)
 			{
+				/*
 				if (Player.currentLabel == "black")
 				{
 					Player.gotoAndStop("white");
@@ -116,6 +140,8 @@
 				{
 					Player.gotoAndStop("black");
 				}
+				*/
+				Player.colorChange();
 			}
 			keyBuf[e.keyCode] = false;
 		}
@@ -131,7 +157,8 @@
 			if (keyBuf[Keyboard.Z] == true)
 			{
 				trace(Bullets);
-				if ((Player.currentLabel == "black") && (Bullets.length < MaxBullet) && 
+				trace(Player.PlayerColor);
+				if ((!Player.PlayerColor) && (Bullets.length < MaxBullet) && 
 				(ArrowShotBullet == true))
 				{
 					//弾（黒）
@@ -142,7 +169,7 @@
 					this.addChild(BulletBlack);
 					ArrowShotBullet = false;
 				}
-				else if ((Player.currentLabel == "white")  && (Bullets.length < MaxBullet)&& 
+				else if ((Player.PlayerColor)  && (Bullets.length < MaxBullet)&& 
 				(ArrowShotBullet == true))
 				{
 					//弾（白）
@@ -165,6 +192,18 @@
 				trace("弾速 : " + BulletSpead);
 				trace("弾数 : " + Bullets.length);
 				Bullets[i].y -=  BulletSpead;
+				//ショットと敵がヒットしたら
+				if(Bullets[i].hitTestObject(Enemy))
+				{
+					//trace(Enemy.hitpoint);
+					/*
+					Enemy.hitpoint--;
+					if(Enemy.hitpoint <= 0)
+					{
+						Enemy.removeChild(this);
+					}
+					*/
+				}
 				if (Bullets[i].y <= 0 - Bullets[i].height)
 				{
 					Bullets.shift();

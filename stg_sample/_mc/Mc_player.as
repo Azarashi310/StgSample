@@ -6,10 +6,11 @@
 	
 	public class Mc_player extends MovieClip {
 		
-		//初期位置
-		private const point_x:int = 260;
-		private const point_y:int = 720;
-		
+		//初期位置（あくまでテスト中ののみ）
+		//private const point_x:int = 260;
+		//private const point_y:int = 720;
+		private const player_pt:Point = new Point(260,720);
+
 		//ムーブスピード
 		private const spead:int = 8;
 		
@@ -21,15 +22,20 @@
 		
 		//弾のウェイト
 		private const BulletWait:int = 300;
-		public function Mc_player() {
+		
+		//Playerの状態(True = 白,Flase = 黒)
+		public var PlayerColor:Boolean = false;
+
+		public function Mc_player():void
+		{
 			// constructor code
 		}
 		
 		//初期位置
 		public function getPoint():Point
 		{
-			var pt:Point = new Point(point_x, point_y);
-			return pt;
+			//var pt:Point = new Point(point_x, point_y);
+			return player_pt;
 		}
 		
 		//移動速度
@@ -54,6 +60,21 @@
 		public function getBulletWait():int
 		{
 			return BulletWait;
+		}
+
+		//色の変更
+		public function colorChange():void
+		{
+			if(PlayerColor)
+			{
+				PlayerColor = false;
+				this.gotoAndStop("black");
+			}
+			else
+			{
+				PlayerColor = true;
+				this.gotoAndStop("white");
+			}
 		}
 	}
 	

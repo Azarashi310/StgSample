@@ -214,28 +214,28 @@
 		//プレイヤーの移動
 		private function MovePlayer():void
 		{
-			if (keyBuf[Keyboard.SHIFT] == true)
+			if (keyBuf[Keyboard.SHIFT] )
 			{
 				Spead = Player.getSpead() / 2;
 				trace(Spead);
 			}
-			else if (keyBuf[Keyboard.SHIFT] == false)
+			else if (keyBuf[Keyboard.SHIFT] )
 			{
 				Spead = Player.getSpead();
 			}
-			if (keyBuf[Keyboard.LEFT] == true)
+			if (keyBuf[Keyboard.LEFT] )
 			{
 				Player.x -= Spead;
 			}
-			if (keyBuf[Keyboard.UP] == true)
+			if (keyBuf[Keyboard.UP] )
 			{
 				Player.y -= Spead;
 			}
-			if (keyBuf[Keyboard.RIGHT] == true)
+			if (keyBuf[Keyboard.RIGHT] )
 			{
 				Player.x += Spead;
 			}
-			if (keyBuf[Keyboard.DOWN] == true)
+			if (keyBuf[Keyboard.DOWN] )
 			{
 				Player.y += Spead;
 			}

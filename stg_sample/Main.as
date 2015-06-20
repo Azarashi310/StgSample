@@ -6,6 +6,7 @@
 	import _mc.Mc_enemy1;
 	import _mc.Mc_enemy2;
 	import flash.display.MovieClip;
+	import flash.events.ContextMenuEvent;
 	import flash.geom.Point;
 	import flash.events.KeyboardEvent;
 	import flash.ui.Keyboard;
@@ -14,13 +15,21 @@
 	import flash.events.TimerEvent;
 	import flash.display.Sprite;
 	import flash.display.Graphics;
+	import Layer.EnemyLayer;
 	
 	public class Main extends MovieClip {
 		
 		//キャラクター
 		private var Player:Mc_player;
-		
+		//敵
 		private var Enemy:Mc_enemy1;
+		
+		//デバック用
+		private var HP:int;
+		
+		//敵格納用
+		private var E_Array:Array = [];
+		
 		//移動速度
 		private var Spead:int;
 		
@@ -101,10 +110,11 @@
 			ShotArrowTimer.start();
 			
 			//プレイヤーを表示させる
-			this.addChild(Player);
+			P_Layer.addChild(Player);
 			
 			//敵の表示
-			this.addChild(Enemy);
+			E_Array.push(Enemy);
+			E_Layer.addChild(E_Array[0]);
 
 			//自身をstageにフォーカスする
 			focusRect = false;
@@ -118,6 +128,9 @@
 			MovePlayer();
 			Shot();
 			ShotMove();
+			trace("敵のインスタンス : " + this.Enemy );
+			trace("弾のインスタンス数 : " + B_Layer.numChildren);
+			trace("敵のHP : " + HP);
 		}
 		
 		//弾のショット許可
@@ -166,7 +179,7 @@
 					BulletBlack.x = Player.x + Player.width / 2 - BulletBlack.width / 2;
 					BulletBlack.y = Player.y - Player.height / 2;
 					Bullets.push(BulletBlack);
-					this.addChild(BulletBlack);
+					B_Layer.addChild(BulletBlack);
 					ArrowShotBullet = false;
 				}
 				else if ((Player.PlayerColor)  && (Bullets.length < MaxBullet)&& 
@@ -177,7 +190,7 @@
 					BulletWhite.x = Player.x + Player.width / 2 - BulletWhite.width / 2;
 					BulletWhite.y = Player.y - Player.height / 2;
 					Bullets.push(BulletWhite);
-					this.addChild(BulletWhite);
+					B_Layer.addChild(BulletWhite);
 					ArrowShotBullet = false;
 				}
 			}
@@ -186,29 +199,38 @@
 		//ショットの移動
 		private function ShotMove():void
 		{
-			for (var i:int = 0; i < Bullets.length; i++ )
-			{
-				trace(Bullets[i].y);
-				trace("弾速 : " + BulletSpead);
-				trace("弾数 : " + Bullets.length);
-				Bullets[i].y -=  BulletSpead;
-				//ショットと敵がヒットしたら
-				if(Bullets[i].hitTestObject(Enemy))
+				for (var i:int = 0; i < Bullets.length; i++ )
 				{
-					//trace(Enemy.hitpoint);
-					/*
-					Enemy.hitpoint--;
-					if(Enemy.hitpoint <= 0)
+					trace(Bullets[i].y);
+					//trace("弾速 : " + BulletSpead);
+					trace("弾数 : " + Bullets.length);
+					Bullets[i].y -=  BulletSpead;
+					//ショットと敵がヒットしたら
+					if (E_Array.length != 0)
 					{
-						Enemy.removeChild(this);
+						if(E_Array[0].hitTestObject(Bullets[i]))
+						{
+							//var HP:int = Enemy.getEnemyHP();
+							HP = Enemy.getEnemyHP();
+							HP--;
+							if(HP <= 0)
+							{
+								E_Layer.removeChildAt(0);
+								E_Array.splice(0, 1);
+								//E_Layer.removeChild(Enemy);
+							}
+							Enemy.setEnemyHP(HP);
+							B_Layer.removeChildAt(0);
+							Bullets.splice(i, 1);
+						}
 					}
-					*/
+					//弾の削除（配列）
+					if (Bullets[i].y <= 0 - Bullets[i].height)
+					{
+						B_Layer.removeChildAt(0);
+						Bullets.shift();
+					}
 				}
-				if (Bullets[i].y <= 0 - Bullets[i].height)
-				{
-					Bullets.shift();
-				}
-			}
 		}
 		
 		//プレイヤーの移動

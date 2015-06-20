@@ -11,7 +11,7 @@
 		private const pt:Point = new Point(130,100);
 
 		//ヒットポイント
-		public var hitPoint:int = 10;
+		public static var hitPoint:int = 10;
 
 		public function Mc_enemy1() 
 		{
@@ -21,6 +21,16 @@
 		public function getPoint():Point
 		{
 			return pt;
+		}
+		
+		public function setEnemyHP(HP:int):void
+		{
+			hitPoint = HP;
+		}
+		
+		public function getEnemyHP():int
+		{
+			return hitPoint;
 		}
 	}
 	

@@ -31,7 +31,7 @@
 		private var enemy_Array:Array = [];
 		
 		//移動速度
-		private var spead:int;
+		private var speed:int;
 		
 		//弾
 		private var bullets:Array = [];
@@ -93,7 +93,7 @@
 
 			//プレイヤー関連の設定
 			//移動速度
-			spead = player.getSpead();
+			speed = player.getSpead();
 			
 			//弾の移動速度
 			bulletSpead = player.getBulletSpead();
@@ -239,28 +239,28 @@
 		{
 			if (keyBuf[Keyboard.SHIFT] )
 			{
-				spead = player.getSpead() / 2;
-				trace(spead);
+				speed = player.getSpead() / 2;
+				trace(speed);
 			}
 			else if (keyBuf[Keyboard.SHIFT] )
 			{
-				spead = player.getSpead();
+				speed = player.getSpead();
 			}
 			if (keyBuf[Keyboard.LEFT] )
 			{
-				player.x -= spead;
+				player.x -= speed;
 			}
 			if (keyBuf[Keyboard.UP] )
 			{
-				player.y -= spead;
+				player.y -= speed;
 			}
 			if (keyBuf[Keyboard.RIGHT] )
 			{
-				player.x += spead;
+				player.x += speed;
 			}
 			if (keyBuf[Keyboard.DOWN] )
 			{
-				player.y += spead;
+				player.y += speed;
 			}
 		}
 	}

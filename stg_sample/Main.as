@@ -20,36 +20,36 @@
 	public class Main extends MovieClip {
 		
 		//キャラクター
-		private var Player:Mc_player;
+		private var player:Mc_player;
 		//敵
-		private var Enemy:Mc_enemy1;
+		private var enemy:Mc_enemy1;
 		
 		//デバック用
 		private var HP:int;
 		
 		//敵格納用
-		private var E_Array:Array = [];
+		private var enemy_Array:Array = [];
 		
 		//移動速度
-		private var Spead:int;
+		private var spead:int;
 		
 		//弾
-		private var Bullets:Array = [];
+		private var bullets:Array = [];
 		//弾速
-		private var BulletSpead:int;
+		private var bulletSpead:int;
 		//最大弾数
-		private var MaxBullet:int;
+		private var maxBullet:int;
 		//弾のウェイト
-		private var BulletWait:int;
+		private var bulletWait:int;
 		//現在のカウント
 		//private var BulletWait_Count:int ;
 		//弾の許可
-		private var ArrowShotBullet:Boolean;
+		private var arrowShotBullet:Boolean;
 		//キーコード
 		private var keyBuf:/*uint*/Array = [];
 		
 		//ショット許可タイマ
-		private var ShotArrowTimer:Timer;
+		private var shotArrowTimer:Timer;
 		
 		public function Main() 
 		{
@@ -59,62 +59,62 @@
 			init();
 			
 			//キーボード操作
-			addEventListener(KeyboardEvent.KEY_UP, Keyboard_KEY_UP_EventListener);
-			addEventListener(KeyboardEvent.KEY_DOWN, Keyboard_KEY_DONW_EventListener);
+			addEventListener(KeyboardEvent.KEY_UP, keyboard_KEY_UP_EventListener);
+			addEventListener(KeyboardEvent.KEY_DOWN, keyboard_KEY_DONW_EventListener);
 
 			//まわすとこ
-			addEventListener(Event.ENTER_FRAME, ENTER_FRAME_EventHandler);
+			addEventListener(Event.ENTER_FRAME, enter_FRAME_EventHandler);
 			
 			//弾を出す許可を管理するタイマイベント
-			ShotArrowTimer.addEventListener(TimerEvent.TIMER, TIMEREvent_Handler);
+			shotArrowTimer.addEventListener(TimerEvent.TIMER, timerEvent_Handler);
 		}
 		
 		//初期化
 		private function init():void 
 		{
 			//プレイヤーのインスタンスを作成
-			Player = new Mc_player();
+			player = new Mc_player();
 
-			Enemy = new Mc_enemy1();
+			enemy = new Mc_enemy1();
 
 			//プレイヤーの座標の取得
-			var pt:Point = Player.getPoint();
+			var pt:Point = player.getPoint();
 
 			//（プレイヤー）初期位置の反映
-			Player.x = pt.x;
-			Player.y = pt.y;
+			player.x = pt.x;
+			player.y = pt.y;
 			
 			//エネミーの座標位置の取得（暫定）
-			pt = Enemy.getPoint();
+			pt = enemy.getPoint();
 
 			//（エネミー）初期位置の反映
-			Enemy.x = pt.x;
-			Enemy.y = pt.y;
+			enemy.x = pt.x;
+			enemy.y = pt.y;
 
 			//プレイヤー関連の設定
 			//移動速度
-			Spead = Player.getSpead();
+			spead = player.getSpead();
 			
 			//弾の移動速度
-			BulletSpead = Player.getBulletSpead();
+			bulletSpead = player.getBulletSpead();
 			
 			//最大弾数
-			MaxBullet = Player.getMaxBullet();
+			maxBullet = player.getMaxBullet();
 			
 			//弾のウェイト
-			BulletWait = Player.getBulletWait();
+			bulletWait = player.getBulletWait();
 			//BulletWait_Count = BulletWait;
 			//ショット許可タイマを設定
-			ShotArrowTimer = new Timer(BulletWait);
-			ArrowShotBullet = true;
-			ShotArrowTimer.start();
+			shotArrowTimer = new Timer(bulletWait);
+			arrowShotBullet = true;
+			shotArrowTimer.start();
 			
 			//プレイヤーを表示させる
-			P_Layer.addChild(Player);
+			P_Layer.addChild(player);
 			
 			//敵の表示
-			E_Array.push(Enemy);
-			E_Layer.addChild(E_Array[0]);
+			enemy_Array.push(enemy);
+			E_Layer.addChild(enemy_Array[0]);
 
 			//自身をstageにフォーカスする
 			focusRect = false;
@@ -123,24 +123,24 @@
 		}
 		
 		//メイン
-		private function ENTER_FRAME_EventHandler(e:Event):void 
+		private function enter_FRAME_EventHandler(e:Event):void 
 		{
-			MovePlayer();
-			Shot();
-			ShotMove();
-			trace("敵のインスタンス : " + this.Enemy );
+			movePlayer();
+			shotMethod();
+			shotMove();
+			trace("敵のインスタンス : " + this.enemy );
 			trace("弾のインスタンス数 : " + B_Layer.numChildren);
 			trace("敵のHP : " + HP);
 		}
 		
 		//弾のショット許可
-		private function TIMEREvent_Handler(e:TimerEvent):void 
+		private function timerEvent_Handler(e:TimerEvent):void 
 		{
-			ArrowShotBullet = true;
+			arrowShotBullet = true;
 		}
 		
 		//カラーチェンジ
-		private function Keyboard_KEY_UP_EventListener(e:KeyboardEvent):void 
+		private function keyboard_KEY_UP_EventListener(e:KeyboardEvent):void 
 		{
 			if (e.keyCode == Keyboard.C)
 			{
@@ -154,112 +154,113 @@
 					Player.gotoAndStop("black");
 				}
 				*/
-				Player.colorChange();
+				player.colorChange();
 			}
 			keyBuf[e.keyCode] = false;
 		}
 		
-		private function Keyboard_KEY_DONW_EventListener(e:KeyboardEvent):void 
+		private function keyboard_KEY_DONW_EventListener(e:KeyboardEvent):void 
 		{
 			keyBuf[e.keyCode] = true;
 		}
 		
 		//ショット
-		private function Shot():void
+		private function shotMethod():void
 		{
 			if (keyBuf[Keyboard.Z] == true)
 			{
-				trace(Bullets);
-				trace(Player.PlayerColor);
-				if ((!Player.PlayerColor) && (Bullets.length < MaxBullet) && 
-				(ArrowShotBullet == true))
+				trace(bullets);
+				trace(player.PlayerColor);
+				if ((!player.PlayerColor) && (bullets.length < maxBullet) && 
+				(arrowShotBullet == true))
 				{
 					//弾（黒）
 					var BulletBlack:Mc_player_bullet1 = new Mc_player_bullet1();
-					BulletBlack.x = Player.x + Player.width / 2 - BulletBlack.width / 2;
-					BulletBlack.y = Player.y - Player.height / 2;
-					Bullets.push(BulletBlack);
+					BulletBlack.x = player.x + player.width / 2 - BulletBlack.width / 2;
+					BulletBlack.y = player.y - player.height / 2;
+					bullets.push(BulletBlack);
 					B_Layer.addChild(BulletBlack);
-					ArrowShotBullet = false;
+					arrowShotBullet = false;
 				}
-				else if ((Player.PlayerColor)  && (Bullets.length < MaxBullet)&& 
-				(ArrowShotBullet == true))
+				else if ((player.PlayerColor)  && (bullets.length < maxBullet)&& 
+				(arrowShotBullet == true))
 				{
 					//弾（白）
 					var BulletWhite:Mc_player_bullet2 = new Mc_player_bullet2();
-					BulletWhite.x = Player.x + Player.width / 2 - BulletWhite.width / 2;
-					BulletWhite.y = Player.y - Player.height / 2;
-					Bullets.push(BulletWhite);
+					BulletWhite.x = player.x + player.width / 2 - BulletWhite.width / 2;
+					BulletWhite.y = player.y - player.height / 2;
+					bullets.push(BulletWhite);
 					B_Layer.addChild(BulletWhite);
-					ArrowShotBullet = false;
+					arrowShotBullet = false;
 				}
 			}
 		}
 		
 		//ショットの移動
-		private function ShotMove():void
+		private function shotMove():void
 		{
-				for (var i:int = 0; i < Bullets.length; i++ )
+				var len:int = bullets.length;
+				for (var i:int = 0; i < len; i++ )
 				{
-					trace(Bullets[i].y);
+					trace(bullets[i].y);
 					//trace("弾速 : " + BulletSpead);
-					trace("弾数 : " + Bullets.length);
-					Bullets[i].y -=  BulletSpead;
+					trace("弾数 : " + bullets.length);
+					bullets[i].y -=  bulletSpead;
 					//ショットと敵がヒットしたら
-					if (E_Array.length != 0)
+					if (enemy_Array.length != 0)
 					{
-						if(E_Array[0].hitTestObject(Bullets[i]))
+						if(enemy_Array[0].hitTestObject(bullets[i]))
 						{
 							//var HP:int = Enemy.getEnemyHP();
-							HP = Enemy.getEnemyHP();
+							HP = enemy.getEnemyHP();
 							HP--;
 							if(HP <= 0)
 							{
 								E_Layer.removeChildAt(0);
-								E_Array.splice(0, 1);
+								enemy_Array.splice(0, 1);
 								//E_Layer.removeChild(Enemy);
 							}
-							Enemy.setEnemyHP(HP);
+							enemy.setEnemyHP(HP);
 							B_Layer.removeChildAt(0);
-							Bullets.splice(i, 1);
+							bullets.splice(i, 1);
 						}
 					}
 					//弾の削除（配列）
-					if (Bullets[i].y <= 0 - Bullets[i].height)
+					if (bullets[i].y <= 0 - bullets[i].height)
 					{
 						B_Layer.removeChildAt(0);
-						Bullets.shift();
+						bullets.shift();
 					}
 				}
 		}
 		
 		//プレイヤーの移動
-		private function MovePlayer():void
+		private function movePlayer():void
 		{
 			if (keyBuf[Keyboard.SHIFT] )
 			{
-				Spead = Player.getSpead() / 2;
-				trace(Spead);
+				spead = player.getSpead() / 2;
+				trace(spead);
 			}
 			else if (keyBuf[Keyboard.SHIFT] )
 			{
-				Spead = Player.getSpead();
+				spead = player.getSpead();
 			}
 			if (keyBuf[Keyboard.LEFT] )
 			{
-				Player.x -= Spead;
+				player.x -= spead;
 			}
 			if (keyBuf[Keyboard.UP] )
 			{
-				Player.y -= Spead;
+				player.y -= spead;
 			}
 			if (keyBuf[Keyboard.RIGHT] )
 			{
-				Player.x += Spead;
+				player.x += spead;
 			}
 			if (keyBuf[Keyboard.DOWN] )
 			{
-				Player.y += Spead;
+				player.y += spead;
 			}
 		}
 	}

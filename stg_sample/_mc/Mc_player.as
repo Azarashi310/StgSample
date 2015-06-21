@@ -18,13 +18,13 @@
 		private const bulletSpead:int = 10;
 		
 		//最大弾数
-		private const MaxBullet:int = 20;
+		private const maxBullet:int = 20;
 		
 		//弾のウェイト
 		private const BulletWait:int = 300;
 		
 		//Playerの状態(True = 白,Flase = 黒)
-		public var PlayerColor:Boolean = false;
+		public var playerColor:Boolean = false;
 
 		public function Mc_player():void
 		{
@@ -53,7 +53,7 @@
 		//最大弾数
 		public function getMaxBullet():int
 		{
-			return MaxBullet;
+			return maxBullet;
 		}
 		
 		//弾のウェイト
@@ -65,14 +65,14 @@
 		//色の変更
 		public function colorChange():void
 		{
-			if(PlayerColor)
+			if(playerColor)
 			{
-				PlayerColor = false;
+				playerColor = false;
 				this.gotoAndStop("black");
 			}
 			else
 			{
-				PlayerColor = true;
+				playerColor = true;
 				this.gotoAndStop("white");
 			}
 		}

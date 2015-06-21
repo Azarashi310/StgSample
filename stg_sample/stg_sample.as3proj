@@ -53,6 +53,7 @@
   <!-- SWC Libraries -->
   <libraryPaths>
     <element path="Tween24_2.0.1.swc" />
+    <element path="Tween24_2.0.1\Tween24_2.0.1\Tween24_2.0.1.swc" />
   </libraryPaths>
   <!-- External Libraries -->
   <externalLibraryPaths>
